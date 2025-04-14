@@ -27,8 +27,8 @@ export default function Home() {
             key={project.id}
             className="overflow-hidden border-none rounded-lg"
           >
-            <CardContent className="p-0">
-              <div className="aspect-video w-full bg-white flex items-center justify-center">
+            <CardContent className="p-0 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="aspect-video w-full bg-gray-100 flex items-center justify-center">
                 {/* 이미지 자리 대체용 - 임시 아이콘이나 텍스트 */}
                 <span className="text-gray-400 text-sm">Image Placeholder</span>
               </div>
@@ -36,7 +36,7 @@ export default function Home() {
                 <h3 className="mb-1 text-base font-medium text-gray-900">
                   {project.title}
                 </h3>
-                <p className="mb-2 text-xs text-gray-500">
+                <p className="mb-2 text-sm text-gray-500">
                   {project.description}
                 </p>
                 <a
@@ -72,7 +72,7 @@ export default function Home() {
           <div key={article.id} className="group">
             <Link
               href={`/updates/${article.slug}`}
-              className="block p-4 rounded-md hover:bg-gray-100 transition-colors"
+              className="block p-4 rounded-md hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
