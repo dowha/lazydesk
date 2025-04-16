@@ -1,6 +1,6 @@
 // components/layout/Layout.tsx
 import { ReactNode } from 'react'
-import { Zap, Github, Instagram, Linkedin, Twitter } from 'lucide-react'
+import { Zap, Github, Instagram, Twitter } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 interface LayoutProps {
@@ -54,13 +54,6 @@ export default function Layout({ children }: LayoutProps) {
           >
             <Github className="h-4 w-4" />
             <span className="sr-only">GitHub</span>
-          </a>
-          <a
-            href="#"
-            className="text-gray-400 hover:text-gray-900 transition-colors"
-          >
-            <Linkedin className="h-4 w-4" />
-            <span className="sr-only">LinkedIn</span>
           </a>
         </div>
       </footer>
