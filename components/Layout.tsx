@@ -1,6 +1,6 @@
 // components/layout/Layout.tsx
 import { ReactNode } from 'react'
-import { Zap, Github, Instagram, Linkedin, Twitter } from 'lucide-react'
+import { Zap, Github, Instagram, Twitter } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 interface LayoutProps {
