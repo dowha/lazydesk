@@ -1,7 +1,8 @@
 // components/layout/Layout.tsx
 import { ReactNode } from 'react'
-import { Zap, Github, Instagram, Twitter } from 'lucide-react'
+import { Github, Instagram, Twitter } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import Image from 'next/image'
 
 interface LayoutProps {
   children: ReactNode
@@ -13,14 +14,11 @@ export default function Layout({ children }: LayoutProps) {
       {/* 로고 + 소개 */}
       <header className="mb-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Zap className="h-5 w-5 text-blue-600" />
-          <h1 className="text-2xl font-medium text-gray-900">
-            Lazydesk Studio
-          </h1>
+        <Image src="/lazydesk-logo.png" alt="Lazydesk Studio Logo" width={240} height={164} priority/>
         </div>
-        <p className="text-gray-500 max-w-xl mx-auto">
+        <h2 className="text-xl marker" style={{ color: '#D1A046' }}>
           Let the early birds rush.
-        </p>
+        </h2>
       </header>
 
       {children}
