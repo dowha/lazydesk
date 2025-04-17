@@ -19,26 +19,29 @@ export default function Home() {
   return (
     <Layout>
       <p className="mt-6 px-4 mb-6 text-md text-gray-800">
-        현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 앉는 순간
-        무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는 느낌이 들죠.
-        하지만 사실 우리는 그 책상 위에서 자주 멍을 때리고, 할 일을 미루고, 괜히
-        정리만 하기도 해요. 그 느긋한 시간들 속에서 진짜 내 생각이 떠오르곤
-        하죠.
+        현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지
+        앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는
+        느낌이 들어요. 하지만 우리는 그 책상 위에서 자주 할 일을 미루고, 멍을
+        때리고, 괜히 책상 정리를 하기도 합니다. 그리고 사실은 그 느긋한 시간
+        속에서 진짜 아이디어가 떠오릅니다.
       </p>
       <p className="mt-6 px-4 mb-6 text-md text-gray-800">
-        <strong>Lazydesk Studio</strong>는 그런 게으름이 허락된 책상에서 시작된
-        1인 창작 스튜디오입니다. 기획, 디자인, 개발까지 모든 과정을 스스로
-        만들어가며, 필요하고 실용적인 웹과 앱 서비스를 만듭니다. 빠르지 않아도
-        괜찮다는 믿음으로, 천천히 그러나 꾸준히 나아갑니다. 부지런한 새들이 먼저
-        벌레를 잡아도 괜찮아요. 저는 느긋한 책상 위에서, 제 속도로 만들고
-        있으니까요.
+        <strong>레이지데스크 스튜디오(Lazydesk Studio)</strong>는 그런 게으름이
+        허락된 책상에서 시작된 1인 창작 스튜디오입니다. 기획, 디자인, 개발까지
+        모든 과정을 스스로 만들어가며, 누군가에게 필요하고 실용적인 (웹과 앱)
+        서비스를 만듭니다. 빠르지 않아도 괜찮다는 믿음으로, 천천히 그러나 꾸준히
+        나아갑니다. 부지런한 새들이 서둘러서 먼저 벌레를 잡아도 괜찮아요. 저는
+        느긋하게 저만의 속도로 무언가를 만들고 있으니까요.{' '}
+        <i>책상 앞에 앉은 채로.</i>
       </p>
 
       <div className="relative w-[95%] mx-auto rounded-xl bg-[#D16A40] px-4 py-6 mb-8">
         <div className="absolute -bottom-6 left-6 w-4 h-6 bg-[#9e4f24] hidden sm:block" />
         <div className="absolute -bottom-6 right-6 w-4 h-6 bg-[#9e4f24] hidden sm:block" />
 
-        <h2 className="mb-6 text-lg font-bold text-white text-center">Projects</h2>
+        <h2 className="mb-6 text-lg font-bold text-white text-center">
+          Projects
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {projects.slice(0, visibleProjects).map((project) => (
             <Card
