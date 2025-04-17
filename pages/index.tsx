@@ -38,7 +38,7 @@ export default function Home() {
         <div className="absolute -bottom-6 left-6 w-4 h-6 bg-[#9e4f24] hidden sm:block" />
         <div className="absolute -bottom-6 right-6 w-4 h-6 bg-[#9e4f24] hidden sm:block" />
 
-        <h2 className="pl-2 mb-6 text-lg font-bold text-white">Projects</h2>
+        <h2 className="mb-6 text-lg font-bold text-white text-center">Projects</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {projects.slice(0, visibleProjects).map((project) => (
             <Card
@@ -73,7 +73,7 @@ export default function Home() {
           <div className="mb-2 flex justify-center">
             <Button
               onClick={() => setVisibleProjects(projects.length)}
-              className="mt-2 text-xs text-white hover:text-gray-800 bg-transparent hover:bg-gray-100"
+              className="mt-4 text-xs text-white hover:text-gray-800 bg-transparent hover:bg-gray-100"
             >
               View more projects <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
