@@ -1,5 +1,8 @@
 // components/layout/Layout.tsx
+'use client'
+
 import { ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import { Github, Instagram, Twitter } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
@@ -9,16 +12,29 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const pathname = usePathname()
+  const isDetailPage = pathname?.startsWith('/updates/')
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       {/* 로고 + 소개 */}
       <header className="mb-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-        <Image src="/lazydesk-logo.png" alt="Lazydesk Studio Logo" width={240} height={164} priority/>
+          <Image
+            src={
+              isDetailPage ? '/lazydesk-logo-small.png' : '/lazydesk-logo.png'
+            }
+            alt="Lazydesk Studio Logo"
+            width={isDetailPage ? 80: 240}
+            height={isDetailPage ? 54 : 164}
+            priority
+          />
         </div>
-        <h2 className="text-xl marker" style={{ color: '#D1A046' }}>
-          Let the early birds rush.
-        </h2>
+        {!isDetailPage && (
+          <h2 className="text-xl marker" style={{ color: '#D1A046' }}>
+            Let the early birds rush
+          </h2>
+        )}
       </header>
 
       {children}
@@ -40,14 +56,14 @@ export default function Layout({ children }: LayoutProps) {
             <span className="sr-only">Twitter</span>
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/lazydesk.studio"
             className="text-gray-400 hover:text-gray-900 transition-colors"
           >
             <Instagram className="h-4 w-4" />
             <span className="sr-only">Instagram</span>
           </a>
           <a
-            href="#"
+            href="https://github.com/lazydesk-studio"
             className="text-gray-400 hover:text-gray-900 transition-colors"
           >
             <Github className="h-4 w-4" />
