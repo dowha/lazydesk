@@ -30,11 +30,6 @@ export default function Layout({ children }: LayoutProps) {
             priority
           />
         </div>
-        {!isDetailPage && (
-          <h2 className="text-xl marker" style={{ color: '#D1A046' }}>
-            Let the early birds rush
-          </h2>
-        )}
       </header>
 
       {children}
