@@ -1,49 +1,79 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Layout from '@/components/Layout'
+import { supabase } from '@/lib/supabase'
 
-const blogPosts: Record<
-  string,
-  { title: string; date: string; content: string }
-> = {
-  'launched-taskflow-2': {
-    title: 'Launched TaskFlow 2.0 with improved performance',
-    date: 'April 5, 2025',
-    content: `
-      <p>Today marks the release of TaskFlow 2.0, a major update...</p>
-      <h2>Offline Support</h2>
-      <p>Now works seamlessly offline using IndexedDB.</p>
-    `,
-  },
-  'redesigning-designsystems-documentation': {
-    title: 'Case study: Redesigning the DesignSystems documentation',
-    date: 'March 22, 2025',
-    content: `
-      <p>In this case study, I’ll share how I redesigned the docs...</p>
-    `,
-  },
-  'building-accessible-interfaces': {
-    title: 'Building accessible interfaces by default',
-    date: 'March 10, 2025',
-    content: `
-      <p>Accessibility should never be an afterthought.</p>
-    `,
-  },
+interface Update {
+  id: string
+  title: string
+  summary: string
+  content: string
+  thumbnail_url?: string
+  created_at: string
+  slug: string
 }
 
 export default function UpdatePostPage() {
   const router = useRouter()
   const { slug } = router.query
-  if (typeof slug !== 'string') {
-    return null // 또는 로딩 표시
+  const [post, setPost] = useState<Update | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (typeof slug !== 'string') return
+
+    const fetchPost = async () => {
+      const { data, error } = await supabase
+        .from('updates')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+
+      if (error || !data) {
+        setPost(null)
+      } else {
+        setPost(data)
+      }
+      setLoading(false)
+    }
+
+    fetchPost()
+  }, [slug])
+
+  if (loading) {
+    return (
+      <Layout>
+        <p className="text-center text-gray-500 mt-12">Loading...</p>
+      </Layout>
+    )
   }
 
-  const post = blogPosts[slug] ?? {
-    title: 'Post not found',
-    date: '',
-    content: '<p>The requested update could not be found.</p>',
+  if (!post) {
+    return (
+      <Layout>
+        <div className="text-center mt-12">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            Post not found
+          </h2>
+          <p className="text-sm text-gray-500">
+            The requested update could not be found.
+          </p>
+          <div className="mt-6">
+            <Link href="/">
+              <Button className="text-sm text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to home
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    )
   }
 
   return (
@@ -59,10 +89,10 @@ export default function UpdatePostPage() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-2 mt-4">
           {post.title}
         </h2>
-        {post.date && (
+        {post.created_at && (
           <div className="flex items-center text-sm text-gray-500">
             <Calendar className="mr-2 h-4 w-4" />
-            {post.date}
+            {new Date(post.created_at).toLocaleDateString()}
           </div>
         )}
       </header>

@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
             }
             alt="Lazydesk Studio Logo"
             width={isDetailPage ? 80 : 240}
-            height={isDetailPage ? 54 : 164}
+            height={isDetailPage ? 54 : 123}
             priority
           />
         </div>
