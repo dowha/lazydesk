@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { ArrowLeft, Calendar } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Layout from '@/components/Layout'
 import { supabase } from '@/lib/supabase'
@@ -89,10 +89,17 @@ export default function UpdatePostPage() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-2 mt-4">
           {post.title}
         </h2>
+
         {post.created_at && (
-          <div className="flex items-center text-sm text-gray-500">
-            <Calendar className="mr-2 h-4 w-4" />
-            {new Date(post.created_at).toLocaleDateString()}
+          <div className="flex justify-end text-sm text-gray-500">
+            {new Date(post.created_at)
+              .toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              })
+              .replace(/\./g, '.')
+              .trim()}
           </div>
         )}
       </header>
