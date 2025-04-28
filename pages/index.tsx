@@ -122,7 +122,6 @@ export default function Home() {
             </Button>
           </div>
         )}
-        <Separator className="mt-12 mb-4" />
       </div>
       {/* Projects 섹션 */}
       <div className="relative w-[95%] mx-auto rounded-xl bg-[#D16A40] px-4 py-6 mt-12 mb-8">
