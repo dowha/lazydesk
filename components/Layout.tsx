@@ -4,7 +4,7 @@
 import { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import { Github, Instagram } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@/components/ui/Separator'
 import Image from 'next/image'
 
 interface LayoutProps {
