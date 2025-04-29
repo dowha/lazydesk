@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   motion,
   AnimatePresence,
@@ -31,22 +31,39 @@ export default function ProjectBadge({
   const x = useMotionValue(0)
   const [, setIsPaused] = useState(false)
 
+  const summaryRef = useRef<HTMLSpanElement>(null)
+
   // ✅ useCallback으로 래핑
   const startScrolling = useCallback(
     (delay = 0) => {
       x.set(0)
+
+      if (summaryRef.current) {
+        const scrollWidth = summaryRef.current.scrollWidth
+        const clientWidth = summaryRef.current.clientWidth
+
+        if (scrollWidth <= clientWidth) {
+          // ✅ 글이 다 보이면 스크롤 안 함
+          return
+        }
+      }
+
+      const baseDuration = 10 // 기준 (대충 20글자 정도를 위한 시간)
+      const lengthFactor = (project.summary.length || 20) / 20 // 20글자 기준
+      const dynamicDuration = baseDuration * lengthFactor
+      const clampedDuration = Math.min(Math.max(dynamicDuration, 5), 30)
       controls.start({
         x: '-100%',
         transition: {
           repeat: Infinity,
           repeatType: 'loop',
-          duration: 10,
+          duration: clampedDuration,
           ease: 'linear',
           delay,
         },
       })
     },
-    [x, controls]
+    [x, controls, project.summary.length]
   )
 
   const stopScrolling = useCallback(() => {
@@ -111,6 +128,7 @@ export default function ProjectBadge({
             className="relative ml-3 text-xs sm:text-sm text-gray-500 max-w-[200px] sm:max-w-[320px] overflow-hidden whitespace-nowrap"
           >
             <motion.span
+              ref={summaryRef}
               style={{ x }}
               animate={controls}
               onMouseEnter={() => {
