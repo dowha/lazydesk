@@ -3,12 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/Button'
+import ProjectSelector from '@/components/ui/Project'
 import Layout from '@/components/Layout'
 import { supabase } from '@/lib/supabase'
-import { Separator } from '@/components/ui/separator'
 
 interface Project {
   id: string
@@ -33,7 +31,6 @@ interface Update {
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([])
   const [articles, setArticles] = useState<Update[]>([])
-  const [visibleProjects, setVisibleProjects] = useState(4)
   const [visibleUpdates, setVisibleUpdates] = useState(3)
   const [loading, setLoading] = useState(true)
 
@@ -54,7 +51,11 @@ export default function Home() {
       <h2 className="mb-2 text-2xl text-gray-900 text-center beanie ">
         Studio Story
       </h2>
-      <Separator className="w-4/5 mx-auto" />
+      <div
+        className={`h-px w-4/5 mx-auto bg-gray-200 mt-12 mb-4`}
+        role="separator"
+      />
+
       <p className="mt-6 px-4 mb-6 text-md text-gray-800">
         현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지
         앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는
@@ -101,7 +102,7 @@ export default function Home() {
             <>
               <div className="flex justify-between items-center border-t border-blue-400  py-1">
                 <h3 className="text-md pl-12 font-semibold text-gray-900">
-                  등록된 소식이 없습니다.
+                  등록된 노트가 없습니다.
                 </h3>
               </div>
               <div className="w-full border-b border-blue-400" />
@@ -197,71 +198,20 @@ export default function Home() {
         </div>
       </div>
       {/* Projects 섹션 */}
-      <div className="relative w-[95%] mx-auto rounded-lg bg-[#F8F9FA] px-4 py-8 mt-12 mb-8">
-        <h2 className="mb-6 text-2xl text-gray-800 text-center beanie">
-          Projects
-        </h2>
 
+      <div className="relative w-[95%] mx-auto rounded-lg bg-[#F8F9FA] px-0 pt-8 pb-6 mt-12 mb-8 ">
+        {/* 파란색 상단 헤더 */}
+        <div className="absolute top-0 left-0 w-full rounded-t-lg bg-gray-700 flex justify-center items-center px-4">
+          <h2 className="text-2xl text-white text-center beanie">Projects</h2>
+        </div>
         {loading ? (
-          <p className="text-center text-gray-500 text-sm">Loading...</p>
+          <p className="text-sm mt-10 text-center text-gray-500">Loading...</p>
         ) : projects.length === 0 ? (
           <p className="text-center text-gray-500 text-sm">
             등록된 프로젝트가 없습니다.
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
-            {projects.slice(0, visibleProjects).map((project) => (
-              <a
-                key={project.id}
-                href={project.external_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <Card className="bg-white shadow-sm rounded-sm p-2 flex flex-col items-center border border-gray-200">
-                  <div className="relative w-full aspect-[3/4] bg-white flex flex-col items-center justify-start">
-                    {/* 썸네일 */}
-                    <div className="w-full h-[65%] relative bg-gray-100 rounded-sm overflow-hidden">
-                      {project.thumbnail_url ? (
-                        <Image
-                          src={project.thumbnail_url}
-                          alt={project.title}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                          Image Placeholder
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 타이틀 */}
-                    <div className="mt-2 w-full text-center text-gray-800 text-md font-semibold">
-                      {project.title}
-                    </div>
-
-                    {/* summary */}
-                    <div className="mt-1 w-full text-left text-gray-500 text-sm px-2">
-                      {project.summary}
-                    </div>
-                  </div>
-                </Card>
-              </a>
-            ))}
-          </div>
-        )}
-
-        {visibleProjects < projects.length && (
-          <div className="mt-6 flex justify-center">
-            <Button
-              onClick={() => setVisibleProjects(projects.length)}
-              className="text-xs text-gray-600 hover:text-gray-900 bg-transparent hover:bg-gray-100"
-            >
-              View more projects <ChevronDown className="ml-1 h-3 w-3" />
-            </Button>
-          </div>
+          <ProjectSelector projects={projects} />
         )}
       </div>
     </Layout>
