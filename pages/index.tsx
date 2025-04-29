@@ -99,7 +99,7 @@ export default function Home() {
             <>
               <div className="flex justify-between items-center border-t border-blue-400  py-1">
                 <h3 className="text-md pl-12 font-semibold text-gray-900">
-                  등록된 소식이 없습니다.
+                  등록된 노트가 없습니다.
                 </h3>
               </div>
               <div className="w-full border-b border-blue-400" />
