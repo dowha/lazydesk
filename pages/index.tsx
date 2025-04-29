@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button'
 import ProjectSelector from '@/components/ui/Project'
 import Layout from '@/components/Layout'
 import { supabase } from '@/lib/supabase'
-import { Separator } from '@/components/ui/Separator'
 
 interface Project {
   id: string
@@ -52,7 +51,11 @@ export default function Home() {
       <h2 className="mb-2 text-2xl text-gray-900 text-center beanie ">
         Studio Story
       </h2>
-      <Separator className="w-4/5 mx-auto" />
+      <div
+        className={`h-px w-4/5 mx-auto bg-gray-200 mt-12 mb-4`}
+        role="separator"
+      />
+
       <p className="mt-6 px-4 mb-6 text-md text-gray-800">
         현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지
         앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는

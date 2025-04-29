@@ -4,7 +4,6 @@
 import { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import { Github, Instagram } from 'lucide-react'
-import { Separator } from '@/components/ui/Separator'
 import Image from 'next/image'
 
 interface LayoutProps {
@@ -42,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {children}
 
-      <Separator className="mt-12 mb-4" />
+      <div className={`h-px w-full bg-gray-200 mt-12 mb-4`} role="separator" />
 
       {/* footer */}
       <footer className="flex flex-col sm:flex-row justify-between items-center gap-4">
