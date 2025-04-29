@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import {
   motion,
   AnimatePresence,
@@ -29,42 +29,58 @@ export default function ProjectBadge({
 }) {
   const controls = useAnimation()
   const x = useMotionValue(0)
-  const [, setIsPaused] = useState(false)
+  const summaryRef = useRef<HTMLSpanElement>(null)
 
-  // ✅ useCallback으로 래핑
   const startScrolling = useCallback(
-    (delay = 0) => {
-      x.set(0)
-      controls.start({
-        x: '-100%',
-        transition: {
-          repeat: Infinity,
-          repeatType: 'loop',
-          duration: 10,
-          ease: 'linear',
-          delay,
-        },
+    (delay = 0, reset = false) => {
+      if (reset) {
+        x.set(0)
+      }
+
+      requestAnimationFrame(() => {
+        if (summaryRef.current) {
+          const scrollWidth = summaryRef.current.scrollWidth
+          const clientWidth = summaryRef.current.clientWidth
+
+          if (scrollWidth <= clientWidth) {
+            return
+          }
+
+          const baseDuration = 10
+          const lengthFactor = (project.summary.length || 20) / 20
+          const dynamicDuration = baseDuration * lengthFactor
+          const clampedDuration = Math.min(Math.max(dynamicDuration, 5), 30)
+
+          const scrollDistance = scrollWidth - clientWidth
+
+          controls.start({
+            x: -scrollDistance,
+            transition: {
+              repeat: Infinity,
+              repeatType: 'loop',
+              duration: clampedDuration,
+              ease: 'linear',
+              delay,
+            },
+          })
+        }
       })
     },
-    [x, controls]
+    [x, controls, project.summary.length]
   )
 
   const stopScrolling = useCallback(() => {
     controls.stop()
   }, [controls])
 
-  // ✅ 첫 열릴 때 흐름 제어
   useEffect(() => {
-    if (isSelected) {
-      startScrolling(1.5)
-    } else {
+    if (!isSelected) {
       stopScrolling()
     }
-  }, [isSelected, startScrolling, stopScrolling])
+  }, [isSelected, stopScrolling])
 
   return (
     <motion.div
-      rel={isSelected ? 'noopener noreferrer' : undefined}
       layout
       onClick={onToggle}
       initial={false}
@@ -73,7 +89,7 @@ export default function ProjectBadge({
         borderColor: isSelected ? '#ff9066' : '#e5e7eb',
       }}
       whileHover={{
-        borderColor: isSelected ? '#ff9066' : '#ff9066',
+        borderColor: '#ff9066',
         backgroundColor: isSelected ? '#fff' : '#FFF9DB',
       }}
       transition={{
@@ -108,20 +124,16 @@ export default function ProjectBadge({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative ml-3 text-xs sm:text-sm text-gray-500 max-w-[200px] sm:max-w-[320px] overflow-hidden whitespace-nowrap"
+            onAnimationComplete={() => startScrolling(1, true)} // ✅ 처음 열릴 때는 reset=true
+            className="relative ml-3 text-xs sm:text-sm text-gray-500 w-[320px] overflow-hidden whitespace-nowrap"
           >
             <motion.span
+              ref={summaryRef}
               style={{ x }}
               animate={controls}
-              onMouseEnter={() => {
-                setIsPaused(true)
-                stopScrolling()
-              }}
-              onMouseLeave={() => {
-                setIsPaused(false)
-                startScrolling(0)
-              }}
-              className="inline-block"
+              onMouseEnter={stopScrolling}
+              onMouseLeave={() => startScrolling(0, false)} // ✅ hover 해제할 때는 reset=false
+              className="inline-block w-full pl-2"
             >
               {project.summary}
             </motion.span>
