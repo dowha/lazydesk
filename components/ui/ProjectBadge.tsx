@@ -33,33 +33,37 @@ export default function ProjectBadge({
 
   const startScrolling = useCallback(
     (delay = 0, reset = false) => {
-      if (reset) x.set(0)
+      if (reset) {
+        x.set(0)
+      }
 
       requestAnimationFrame(() => {
-        if (!summaryRef.current) return
+        if (summaryRef.current) {
+          const scrollWidth = summaryRef.current.scrollWidth
+          const clientWidth = summaryRef.current.clientWidth
 
-        const scrollWidth = summaryRef.current.scrollWidth
-        const clientWidth = summaryRef.current.clientWidth
+          if (scrollWidth <= clientWidth) {
+            return
+          }
 
-        if (scrollWidth <= clientWidth + 5) return // 약간의 여유
+          const baseDuration = 10
+          const lengthFactor = (project.summary.length || 20) / 20
+          const dynamicDuration = baseDuration * lengthFactor
+          const clampedDuration = Math.min(Math.max(dynamicDuration, 5), 30)
 
-        const baseDuration = 10
-        const lengthFactor = (project.summary.length || 20) / 20
-        const dynamicDuration = baseDuration * lengthFactor
-        const clampedDuration = Math.min(Math.max(dynamicDuration, 5), 30)
+          const scrollDistance = scrollWidth - clientWidth
 
-        const scrollDistance = scrollWidth - clientWidth
-
-        controls.start({
-          x: -scrollDistance,
-          transition: {
-            repeat: Infinity,
-            repeatType: 'loop',
-            duration: clampedDuration,
-            ease: 'linear',
-            delay,
-          },
-        })
+          controls.start({
+            x: -scrollDistance,
+            transition: {
+              repeat: Infinity,
+              repeatType: 'loop',
+              duration: clampedDuration,
+              ease: 'linear',
+              delay,
+            },
+          })
+        }
       })
     },
     [x, controls, project.summary.length]
@@ -70,7 +74,9 @@ export default function ProjectBadge({
   }, [controls])
 
   useEffect(() => {
-    if (!isSelected) stopScrolling()
+    if (!isSelected) {
+      stopScrolling()
+    }
   }, [isSelected, stopScrolling])
 
   return (
@@ -86,11 +92,15 @@ export default function ProjectBadge({
         borderColor: '#ff9066',
         backgroundColor: isSelected ? '#fff' : '#FFF9DB',
       }}
-      transition={{ duration: 0.1, ease: 'easeInOut' }}
+      transition={{
+        duration: 0.1,
+        ease: 'easeInOut',
+      }}
       className={`group relative inline-flex items-center px-4 py-2 rounded-full text-sm sm:text-base font-medium overflow-visible border transition-all duration-300 ${
         isSelected ? 'text-gray-800' : 'text-gray-600'
       } cursor-pointer hover:text-gray-800`}
     >
+      {/* 아이콘 */}
       {project.icon_url && (
         <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center mr-2">
           <Image
@@ -106,29 +116,24 @@ export default function ProjectBadge({
       <span className="mr-2 text-md">{project.title}</span>
 
       {/* summary */}
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {isSelected && (
           <motion.div
             key="summary"
-            initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-            animate={{ opacity: 1, width: 'auto', marginLeft: '0.75rem' }}
-            exit={{ opacity: 0, width: 0, marginLeft: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            onAnimationComplete={() => {
-              const el = summaryRef.current
-              if (el && el.scrollWidth - el.clientWidth > 10) {
-                startScrolling(0.5, true)
-              }
-            }}
-            className="relative text-xs sm:text-sm text-gray-500 overflow-hidden whitespace-nowrap"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onAnimationComplete={() => startScrolling(1, true)} // ✅ 처음 열릴 때는 reset=true
+            className="relative ml-3 text-xs sm:text-sm text-gray-500 w-[320px] overflow-hidden whitespace-nowrap"
           >
             <motion.span
               ref={summaryRef}
               style={{ x }}
               animate={controls}
               onMouseEnter={stopScrolling}
-              onMouseLeave={() => startScrolling(0, false)}
-              className="inline-block"
+              onMouseLeave={() => startScrolling(0, false)} // ✅ hover 해제할 때는 reset=false
+              className="inline-block w-full pl-2"
             >
               {project.summary}
             </motion.span>
