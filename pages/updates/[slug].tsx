@@ -57,15 +57,15 @@ export default function UpdatePostPage() {
     return (
       <Layout>
         <div className="text-center mt-12">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-md font-semibold text-gray-900 mb-2">
             Post not found
-          </h2>
+          </h3>
           <p className="text-sm text-gray-500">
             The requested update could not be found.
           </p>
           <div className="mt-6">
             <Link href="/">
-              <Button className="text-sm text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
+              <Button className="text-xs text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to home
               </Button>
@@ -80,31 +80,31 @@ export default function UpdatePostPage() {
     <Layout>
       <header className="mb-8">
         <Link href="/">
-          <Button className="text-sm text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
+          <Button className="text-xs text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to home
           </Button>
         </Link>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2 mt-4">
+        <h3 className="text-md font-semibold text-gray-900 mb-2 mt-4">
           {post.title}
-        </h2>
+        </h3>
 
         {post.created_at && (
-          <div className="flex justify-end text-sm text-gray-500">
+          <div className="flex justify-end text-xs text-gray-500">
             {new Date(post.created_at)
               .toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
               })
-              .replace(/\./g, '.')
+              .replace(/\. /g, '.')
               .trim()}
           </div>
         )}
       </header>
 
-      <article className="prose prose-sm prose-gray max-w-none">
+      <article className="prose prose-sm prose-gray max-w-none text-sm">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
     </Layout>

@@ -52,7 +52,7 @@ export default function Home() {
         Studio Story
       </h2>
       <div
-        className={`h-px w-4/5 mx-auto bg-gray-200 mt-12 mb-4`}
+        className={`h-px w-4/5 mx-auto bg-gray-200 mt-2 mb-4`}
         role="separator"
       />
 
