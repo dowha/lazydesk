@@ -46,8 +46,10 @@ export default function Layout({ children }: LayoutProps) {
       {/* footer */}
       <footer className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="text-xs text-gray-400 text-center sm:text-left">
-          <p>사업자등록번호: 123-45-67890</p>
-          <p>© {new Date().getFullYear()} Lazydesk Studio</p>
+          <p>사업자등록번호: 564-24-02094</p>
+          <p>
+            © {new Date().getFullYear()} 레이지데스크 스튜디오(Lazydesk Studio)
+          </p>
         </div>
         <div className="flex gap-4">
           <a
