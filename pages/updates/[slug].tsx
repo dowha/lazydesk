@@ -67,7 +67,7 @@ export default function UpdatePostPage() {
             <Link href="/">
               <Button className="text-xs text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to home
+                Back
               </Button>
             </Link>
           </div>
@@ -82,7 +82,7 @@ export default function UpdatePostPage() {
         <Link href="/">
           <Button className="text-xs text-gray-500 hover:text-gray-800 bg-transparent hover:bg-gray-100">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to home
+            Back
           </Button>
         </Link>
 
