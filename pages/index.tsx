@@ -1,20 +1,16 @@
-'use client'
-
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import ProjectSelector from '@/components/ui/Project'
-import Layout from '@/components/Layout'
-import { supabase } from '@/lib/supabase'
 import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+
 interface Project {
   id: string
   title: string
   summary: string
+  icon_url?: string
+  screenshot_url?: string
   external_url: string
-  github_url?: string
-  thumbnail_url?: string
   created_at?: string
 }
 
@@ -23,25 +19,249 @@ interface Update {
   title: string
   summary: string
   content: string
-  thumbnail_url?: string
   created_at: string
   slug: string
 }
 
+function formatYear(dateStr?: string): string {
+  if (!dateStr) return '—'
+  return new Date(dateStr).getFullYear().toString()
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+}
+
+function Nav() {
+  return (
+    <header className="nav">
+      <div className="shell nav-inner">
+        <a href="#top" className="brand">
+          <Image
+            src="/lazydesk-logo-small.png"
+            alt="Lazydesk Studio"
+            width={240}
+            height={164}
+            className="brand-logo"
+            priority
+          />
+          <span className="brand-name">Lazydesk<em>.</em>Studio</span>
+        </a>
+        <nav className="nav-links">
+          <a href="#works" className="nav-primary">
+            Works <span className="nav-arrow">↓</span>
+          </a>
+          <a href="#about">About</a>
+          <a href="#writing">Writing</a>
+          <a href="#contact">Contact</a>
+          <span className="nav-cta nav-cta-stay">
+            <span className="dot" />
+            <span>Available</span>
+          </span>
+        </nav>
+      </div>
+    </header>
+  )
+}
+
+function Hero() {
+  return (
+    <section className="hero" id="top">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/lazydesk-logo.png"
+        alt=""
+        className="hero-logo hero-logo--watermark"
+        aria-hidden="true"
+      />
+      <div className="shell">
+        <h1 className="h-display hero-headline">
+          <span className="line">Small, slow,</span>
+          <span className="line">honest app</span>
+          <span className="line">made <span className="accent">at a lazy desk.</span></span>
+        </h1>
+        <div className="hero-foot">
+          <div className="hero-tag body-l">
+            게으름이 허락된 책상에서 시작된 1인 창작 스튜디오
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function About() {
+  return (
+    <section className="section" id="about">
+      <div className="shell">
+        <div className="section-head">
+          <h2 className="h-section">About</h2>
+        </div>
+        <div className="about-grid">
+          <div className="about-text">
+            <p>현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지 앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는 느낌이 들어요. 하지만 우리는 그 책상 위에서 자주 할 일을 미루고, 멍을 때리고, 괜히 책상 정리를 하기도 합니다. 그리고 사실은 그 느긋한 시간 속에서 진짜 아이디어가 떠오릅니다.</p>
+            <p>레이지데스크 스튜디오(Lazydesk Studio)는 그런 게으름이 허락된 책상에서 시작된 1인 창작 스튜디오입니다. 기획, 디자인, 개발까지 모든 과정을 스스로 만들어가며, 누군가에게 필요하고 실용적인 (웹과 앱) 서비스를 만듭니다.</p>
+            <p>빠르지 않아도 괜찮다는 믿음으로, 천천히 그러나 꾸준히 나아갑니다. 부지런한 새들이 서둘러서 먼저 벌레를 잡아도 괜찮아요. 저는 느긋하게 저만의 속도로 무언가를 만들고 있으니까요. 책상 앞에서.</p>
+          </div>
+          <div className="about-side">
+            <div className="stack">
+              <div className="row">
+                <span className="k">Practice</span>
+                <span className="v">Product design, frontend &amp; iOS development</span>
+              </div>
+              <div className="row">
+                <span className="k">Tools</span>
+                <span className="v">
+                  <span className="tag">Figma</span>
+                  <span className="tag">React</span>
+                  <span className="tag">Swift</span>
+                  <span className="tag">Tailwind</span>
+                  <span className="tag">Postgres</span>
+                </span>
+              </div>
+              <div className="row">
+                <span className="k">Languages</span>
+                <span className="v">한국어 · English</span>
+              </div>
+              <div className="row">
+                <span className="k">Founded</span>
+                <span className="v">2023, Seoul</span>
+              </div>
+              <div className="row">
+                <span className="k">Lead time</span>
+                <span className="v">대개 4 — 8주, 한 번에 한 프로젝트</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Works({ projects }: { projects: Project[] }) {
+  return (
+    <section className="section" id="works">
+      <div className="shell">
+        <div className="section-head">
+          <h2 className="h-section">Works</h2>
+        </div>
+        <div className="works-list">
+          {projects.length === 0
+            ? Array.from({ length: 4 }, (_, i) => (
+                <div key={i} className="row row-empty">
+                  <span className="row-icon row-icon-empty" />
+                  <span className="title" style={{ color: 'var(--ink-mute)' }}>—</span>
+                  <span className="yr">—</span>
+                  <span className="arrow" />
+                </div>
+              ))
+            : projects.map((p) => (
+                <a
+                  key={p.id}
+                  href={p.external_url}
+                  className="row"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="row-icon">
+                    {p.icon_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.icon_url} alt={p.title} />
+                    )}
+                  </span>
+                  <span className="title">{p.title}</span>
+                  <span className="yr">{formatYear(p.created_at)}</span>
+                  <span className="arrow">Visit →</span>
+                </a>
+              ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Writing({ updates }: { updates: Update[] }) {
+  return (
+    <section className="section" id="writing">
+      <div className="shell">
+        <div className="section-head">
+          <h2 className="h-section">Writing</h2>
+        </div>
+        <div className="writing">
+          {updates.length === 0
+            ? Array.from({ length: 4 }, (_, i) => (
+                <div key={i} className="write-card write-card-empty">
+                  <div className="write-meta"><span>—</span></div>
+                  <h3 style={{ color: 'var(--ink-mute)' }}>Coming soon</h3>
+                  <p style={{ color: 'var(--ink-mute)' }}>아직 쓰이지 않은 글.</p>
+                  <span className="write-arrow" />
+                </div>
+              ))
+            : updates.map((n) => (
+                <Link key={n.id} href={`/updates/${n.slug}`} className="write-card">
+                  <div className="write-meta">
+                    <span>{formatDate(n.created_at)}</span>
+                  </div>
+                  <h3>{n.title}</h3>
+                  <p>{n.summary}</p>
+                  <span className="write-arrow">Read →</span>
+                </Link>
+              ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Contact() {
+  return (
+    <section className="contact" id="contact">
+      <div className="shell">
+        <h2 className="contact-headline">
+          무언가를<br />
+          요청하고 싶다면<br />
+          <a href="mailto:hello@lazydesk.studio">hello@lazydesk.studio</a>
+        </h2>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="ld-footer">
+      <div className="shell footer-inner">
+        <span>© 2026 레이지데스크 스튜디오(Lazydesk Studio) · 사업자등록번호 564-24-02094</span>
+        <span className="footer-social">
+          <a href="https://www.instagram.com/lazydesk.studio" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/lazydesk-studio" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </span>
+      </div>
+    </footer>
+  )
+}
+
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [articles, setArticles] = useState<Update[]>([])
-  const [visibleUpdates, setVisibleUpdates] = useState(3)
-  const [loading, setLoading] = useState(true)
+  const [updates, setUpdates] = useState<Update[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: projectsData } = await supabase.from('projects').select('*')
-      const { data: updatesData } = await supabase.from('updates').select('*')
-
-      setProjects(projectsData || [])
-      setArticles(updatesData || [])
-      setLoading(false)
+      const [{ data: projectsData }, { data: updatesData }] = await Promise.all([
+        supabase
+          .from('projects')
+          .select('id, title, summary, icon_url, screenshot_url, external_url, created_at')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('updates')
+          .select('id, title, summary, content, created_at, slug')
+          .order('created_at', { ascending: false }),
+      ])
+      setProjects(projectsData ?? [])
+      setUpdates(updatesData ?? [])
     }
     fetchData()
   }, [])
@@ -50,190 +270,22 @@ export default function Home() {
     <>
       <Head>
         <title>Lazydesk Studio</title>
-        <meta
-          name="description"
-          content="레이지데스크 스튜디오는 느긋하게 나아가는 1인 창작 스튜디오입니다."
-        />
+        <meta name="description" content="게으름이 허락된 책상에서 시작된 1인 창작 스튜디오. 기획·디자인·개발." />
         <meta property="og:title" content="Lazydesk Studio" />
-        <meta
-          property="og:description"
-          content="게으름이 허락된 책상에서 시작된 웹/앱 서비스 제작 스튜디오"
-        />
+        <meta property="og:description" content="게으름이 허락된 책상에서 시작된 웹/앱 서비스 제작 스튜디오" />
         <meta property="og:image" content="/og-image.png" />
         <meta property="og:url" content="https://lazydesk.studio" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <Layout>
-        <h2 className="mb-2 text-2xl text-gray-900 text-center beanie ">
-          Studio Story
-        </h2>
-        <div
-          className={`h-px w-4/5 mx-auto bg-gray-200 mt-2 mb-4`}
-          role="separator"
-        />
-
-        <p className="mt-6 px-4 mb-6 text-md text-gray-800">
-          현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지
-          앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는
-          느낌이 들어요. 하지만 우리는 그 책상 위에서 자주 할 일을 미루고, 멍을
-          때리고, 괜히 책상 정리를 하기도 합니다. 그리고 사실은 그 느긋한 시간
-          속에서 진짜 아이디어가 떠오릅니다.
-        </p>
-        <p className="mt-6 px-4 mb-6 text-md text-gray-800">
-          <strong>레이지데스크 스튜디오(Lazydesk Studio)</strong>는 그런
-          게으름이 허락된 책상에서 시작된 1인 창작 스튜디오입니다. 기획, 디자인,
-          개발까지 모든 과정을 스스로 만들어가며, 누군가에게 필요하고 실용적인
-          (웹과 앱) 서비스를 만듭니다. 빠르지 않아도 괜찮다는 믿음으로, 천천히
-          그러나 꾸준히 나아갑니다. 부지런한 새들이 서둘러서 먼저 벌레를 잡아도
-          괜찮아요. 저는 느긋하게 저만의 속도로 무언가를 만들고 있으니까요.{' '}
-          <i>책상 앞에서.</i>
-        </p>
-        {/* Updates 섹션 (Oxford 노트 스타일로) */}
-        <div className="relative w-[95%] mx-auto rounded-lg bg-[#FFF9DB] px-0 pt-8 pb-6 mt-12 mb-8 overflow-hidden">
-          {/* 파란색 상단 헤더 */}
-          <div className="absolute top-0 left-0 w-full bg-[#003366] flex justify-center items-center px-4">
-            <h2 className="text-2xl text-white text-center beanie">
-              Recent Notes
-            </h2>
-          </div>
-
-          <div className="mt-10 px-4 relative">
-            {/* 전체 빨간 세로줄 두 개 */}
-            <div className="absolute top-0 left-12 w-px h-full bg-red-300" />
-            <div className="absolute top-0 left-14 w-px h-full bg-red-300" />
-
-            {loading ? (
-              <>
-                <div className="flex justify-between items-center border-t border-blue-400  py-1">
-                  <p className="text-sm pl-12 text-gray-500">Loading...</p>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-                <div className="py-0.5">
-                  <span className="text-sm pl-12 font-semibold text-gray-900">
-                    &nbsp;
-                  </span>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-              </>
-            ) : articles.length === 0 ? (
-              <>
-                <div className="flex justify-between items-center border-t border-blue-400  py-1">
-                  <h3 className="text-md pl-12 font-semibold text-gray-900">
-                    등록된 노트가 없습니다.
-                  </h3>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-                <div className="py-0.5">
-                  <span className="text-sm pl-12 font-semibold text-gray-900">
-                    &nbsp;
-                  </span>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-              </>
-            ) : (
-              <>
-                <div className="space-y-0">
-                  {articles.slice(0, visibleUpdates).map((article, idx) => (
-                    <div
-                      key={article.id}
-                      className={`flex flex-col ${
-                        idx === 0 ? 'border-t border-blue-400' : ''
-                      }`}
-                    >
-                      <Link
-                        href={`/updates/${article.slug}`}
-                        className="flex flex-col flex-1 hover:bg-yellow-100"
-                      >
-                        {/* 제목 + 날짜 */}
-                        <div className="flex justify-between items-center py-1">
-                          <h3 className="truncate w-full text-md pl-12 font-semibold text-gray-900">
-                            {article.title}
-                          </h3>
-                          <span className="hidden md:inline text-xs text-gray-400 mx-2">
-                            {new Date(article.created_at)
-                              .toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })
-                              .replace(/\. /g, '.')
-                              .replace('.', '.')}
-                          </span>
-                        </div>
-
-                        {/* 제목 끝에 연한 파란 줄 */}
-                        <div
-                          className={`w-full border-b ${
-                            article.summary
-                              ? 'border-blue-200'
-                              : 'border-blue-400'
-                          }`}
-                        />
-                        {/* summary가 있을 때만 보여주기 */}
-                        {article.summary && (
-                          <>
-                            <div className="flex items-center ">
-                              <p className="truncate w-full text-md text-gray-700 py-1 pl-12 ">
-                                <span className="text-sm">
-                                  {'—'} {article.summary}
-                                </span>
-                              </p>
-                            </div>
-                            {/* summary 끝에 진한 파란 줄 */}
-                            <div className="w-full border-b border-blue-400" />
-                          </>
-                        )}
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-
-                {/* 리스트 끝에만 빈 줄 + 진한 파란줄 */}
-                <div className="py-0.5">
-                  <span className="text-sm pl-12 font-semibold text-gray-900">
-                    &nbsp;
-                  </span>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-              </>
-            )}
-
-            {/* 더보기 버튼 */}
-            {visibleUpdates < articles.length && (
-              <div>
-                <div className="flex justify-center order-b py-0.5">
-                  <Button
-                    onClick={() => setVisibleUpdates(articles.length)}
-                    className="py-1 text-xs text-gray-500 hover:text-gray-800 bg-transparent hover:bg-yellow-100"
-                  >
-                    View more notes <ChevronDown className="ml-1 h-3 w-3" />
-                  </Button>
-                </div>
-                <div className="w-full border-b border-blue-400" />
-              </div>
-            )}
-          </div>
-        </div>
-        {/* Projects 섹션 */}
-
-        <div className="relative w-[95%] mx-auto rounded-lg bg-[#F8F9FA] px-0 pt-8 pb-6 mt-12 mb-8 ">
-          {/* 파란색 상단 헤더 */}
-          <div className="absolute top-0 left-0 w-full rounded-t-lg bg-gray-700 flex justify-center items-center px-4">
-            <h2 className="text-2xl text-white text-center beanie">Projects</h2>
-          </div>
-          {loading ? (
-            <p className="text-sm mt-10 text-center text-gray-500">
-              Loading...
-            </p>
-          ) : projects.length === 0 ? (
-            <p className="text-center text-gray-500 text-sm">
-              등록된 프로젝트가 없습니다.
-            </p>
-          ) : (
-            <ProjectSelector projects={projects} />
-          )}
-        </div>
-      </Layout>
+      <Nav />
+      <main>
+        <Hero />
+        <About />
+        <Works projects={projects} />
+        <Writing updates={updates} />
+        <Contact />
+      </main>
+      <Footer />
     </>
   )
 }
