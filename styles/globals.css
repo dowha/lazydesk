@@ -638,6 +638,7 @@ footer.ld-footer {
 }
 @media (max-width: 600px) {
   :root { --gutter: 24px; }
+  .nav .shell { padding-left: 20px !important; padding-right: 20px !important; }
   .nav-links a:not(.nav-primary) { display: none; }
   .hero-logo--watermark { right: -50px; bottom: auto; top: 80px; width: 240px; opacity: .12; }
 }
