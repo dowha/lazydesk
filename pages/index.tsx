@@ -4,14 +4,24 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
+/* ── 타입 ──────────────────────────────────── */
+
+interface StudioContent {
+  hero_lines: string[]
+  hero_accent: string | null
+  hero_subtitle: string | null
+  about_body: string[]
+  about_table: { k: string; v: string; type: 'text' | 'tags' }[]
+  contact_message: string | null
+  contact_email: string | null
+}
+
 interface Work {
   id: string
   title: string
-  description: string | null
   kind: string | null
   year: string | null
   icon_url: string | null
-  screenshot_url: string | null
   external_url: string | null
   order_index: number
 }
@@ -24,10 +34,14 @@ interface Writing {
   date: string
 }
 
+/* ── 유틸 ──────────────────────────────────── */
+
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
 }
+
+/* ── Nav ───────────────────────────────────── */
 
 function Nav() {
   return (
@@ -45,9 +59,7 @@ function Nav() {
           <span className="brand-name">Lazydesk<em>.</em>Studio</span>
         </a>
         <nav className="nav-links">
-          <a href="#works" className="nav-primary">
-            Works <span className="nav-arrow">↓</span>
-          </a>
+          <a href="#works" className="nav-primary">Works <span className="nav-arrow">↓</span></a>
           <a href="#about">About</a>
           <a href="#writing">Writing</a>
           <a href="#contact">Contact</a>
@@ -61,33 +73,42 @@ function Nav() {
   )
 }
 
-function Hero() {
+/* ── Hero ──────────────────────────────────── */
+
+function Hero({ content }: { content: StudioContent | null }) {
+  const lines = content?.hero_lines ?? ['Small, slow,', 'honest app', 'made']
+  const accent = content?.hero_accent ?? 'at a lazy desk.'
+  const subtitle = content?.hero_subtitle ?? '게으름이 허락된 책상에서 시작된 1인 창작 스튜디오'
+  const lastLine = lines[lines.length - 1]
+  const prevLines = lines.slice(0, -1)
+
   return (
     <section className="hero" id="top">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/lazydesk-logo.png"
-        alt=""
-        className="hero-logo hero-logo--watermark"
-        aria-hidden="true"
-      />
+      <img src="/lazydesk-logo.png" alt="" className="hero-logo hero-logo--watermark" aria-hidden="true" />
       <div className="shell">
         <h1 className="h-display hero-headline">
-          <span className="line">Small, slow,</span>
-          <span className="line">honest app</span>
-          <span className="line">made <span className="accent">at a lazy desk.</span></span>
+          {prevLines.map((line, i) => (
+            <span key={i} className="line">{line}</span>
+          ))}
+          <span className="line">
+            {lastLine}{lastLine && accent ? ' ' : ''}<span className="accent">{accent}</span>
+          </span>
         </h1>
         <div className="hero-foot">
-          <div className="hero-tag body-l">
-            게으름이 허락된 책상에서 시작된 1인 창작 스튜디오
-          </div>
+          <div className="hero-tag body-l">{subtitle}</div>
         </div>
       </div>
     </section>
   )
 }
 
-function About() {
+/* ── About ─────────────────────────────────── */
+
+function About({ content }: { content: StudioContent | null }) {
+  const body = content?.about_body ?? []
+  const table = content?.about_table ?? []
+
   return (
     <section className="section" id="about">
       <div className="shell">
@@ -96,38 +117,22 @@ function About() {
         </div>
         <div className="about-grid">
           <div className="about-text">
-            <p>현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지 앉는 순간 무언가 해야 할 것 같고, 아무것도 하지 않으면 왠지 뒤처지는 느낌이 들어요. 하지만 우리는 그 책상 위에서 자주 할 일을 미루고, 멍을 때리고, 괜히 책상 정리를 하기도 합니다. 그리고 사실은 그 느긋한 시간 속에서 진짜 아이디어가 떠오릅니다.</p>
-            <p>레이지데스크 스튜디오(Lazydesk Studio)는 그런 게으름이 허락된 책상에서 시작된 1인 창작 스튜디오입니다. 기획, 디자인, 개발까지 모든 과정을 스스로 만들어가며, 누군가에게 필요하고 실용적인 (웹과 앱) 서비스를 만듭니다.</p>
-            <p>빠르지 않아도 괜찮다는 믿음으로, 천천히 그러나 꾸준히 나아갑니다. 부지런한 새들이 서둘러서 먼저 벌레를 잡아도 괜찮아요. 저는 느긋하게 저만의 속도로 무언가를 만들고 있으니까요. 책상 앞에서.</p>
+            {body.map((para, i) => <p key={i}>{para}</p>)}
           </div>
           <div className="about-side">
             <div className="stack">
-              <div className="row">
-                <span className="k">Practice</span>
-                <span className="v">Product design, frontend &amp; iOS development</span>
-              </div>
-              <div className="row">
-                <span className="k">Tools</span>
-                <span className="v">
-                  <span className="tag">Figma</span>
-                  <span className="tag">React</span>
-                  <span className="tag">Swift</span>
-                  <span className="tag">Tailwind</span>
-                  <span className="tag">Postgres</span>
-                </span>
-              </div>
-              <div className="row">
-                <span className="k">Languages</span>
-                <span className="v">한국어 · English</span>
-              </div>
-              <div className="row">
-                <span className="k">Founded</span>
-                <span className="v">2023, Seoul</span>
-              </div>
-              <div className="row">
-                <span className="k">Lead time</span>
-                <span className="v">대개 4 — 8주, 한 번에 한 프로젝트</span>
-              </div>
+              {table.map((row, i) => (
+                <div key={i} className="row">
+                  <span className="k">{row.k}</span>
+                  <span className="v">
+                    {row.type === 'tags'
+                      ? row.v.split(',').map((tag) => (
+                          <span key={tag} className="tag">{tag.trim()}</span>
+                        ))
+                      : row.v}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -135,6 +140,8 @@ function About() {
     </section>
   )
 }
+
+/* ── Works ─────────────────────────────────── */
 
 function Works({ works }: { works: Work[] }) {
   return (
@@ -154,13 +161,7 @@ function Works({ works }: { works: Work[] }) {
                 </div>
               ))
             : works.map((w) => (
-                <a
-                  key={w.id}
-                  href={w.external_url ?? '#'}
-                  className="row"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a key={w.id} href={w.external_url ?? '#'} className="row" target="_blank" rel="noopener noreferrer">
                   <span className="row-icon">
                     {w.icon_url && (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -177,6 +178,8 @@ function Works({ works }: { works: Work[] }) {
     </section>
   )
 }
+
+/* ── Writing ───────────────────────────────── */
 
 function WritingSection({ writings }: { writings: Writing[] }) {
   return (
@@ -197,9 +200,7 @@ function WritingSection({ writings }: { writings: Writing[] }) {
               ))
             : writings.map((n) => (
                 <Link key={n.id} href={`/writing/${n.slug}`} className="write-card">
-                  <div className="write-meta">
-                    <span>{formatDate(n.date)}</span>
-                  </div>
+                  <div className="write-meta"><span>{formatDate(n.date)}</span></div>
                   <h3>{n.title}</h3>
                   <p>{n.excerpt}</p>
                   <span className="write-arrow">Read →</span>
@@ -211,19 +212,29 @@ function WritingSection({ writings }: { writings: Writing[] }) {
   )
 }
 
-function Contact() {
+/* ── Contact ───────────────────────────────── */
+
+function Contact({ content }: { content: StudioContent | null }) {
+  const message = content?.contact_message ?? '무언가를\n요청하고 싶다면'
+  const email = content?.contact_email ?? 'hello@lazydesk.studio'
+  const lines = message.split('\n')
+
   return (
     <section className="contact" id="contact">
       <div className="shell">
         <h2 className="contact-headline">
-          무언가를<br />
-          요청하고 싶다면<br />
-          <a href="mailto:hello@lazydesk.studio">hello@lazydesk.studio</a>
+          {lines.map((line, i) => (
+            <span key={i}>{line}{i < lines.length - 1 && <br />}</span>
+          ))}
+          <br />
+          <a href={`mailto:${email}`}>{email}</a>
         </h2>
       </div>
     </section>
   )
 }
+
+/* ── Footer ────────────────────────────────── */
 
 function Footer() {
   return (
@@ -240,16 +251,28 @@ function Footer() {
   )
 }
 
+/* ── Page ──────────────────────────────────── */
+
 export default function Home() {
+  const [studio, setStudio] = useState<StudioContent | null>(null)
   const [works, setWorks] = useState<Work[]>([])
   const [writings, setWritings] = useState<Writing[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const [{ data: worksData }, { data: writingsData }] = await Promise.all([
+      const [
+        { data: studioData },
+        { data: worksData },
+        { data: writingsData },
+      ] = await Promise.all([
+        supabase
+          .from('studio')
+          .select('hero_lines, hero_accent, hero_subtitle, about_body, about_table, contact_message, contact_email')
+          .limit(1)
+          .single(),
         supabase
           .from('works')
-          .select('id, title, description, kind, year, icon_url, screenshot_url, external_url, order_index')
+          .select('id, title, kind, year, icon_url, external_url, order_index')
           .eq('is_published', true)
           .order('order_index', { ascending: true }),
         supabase
@@ -258,6 +281,8 @@ export default function Home() {
           .eq('is_published', true)
           .order('date', { ascending: false }),
       ])
+
+      if (studioData) setStudio(studioData as StudioContent)
       setWorks(worksData ?? [])
       setWritings(writingsData ?? [])
     }
@@ -277,11 +302,11 @@ export default function Home() {
       </Head>
       <Nav />
       <main>
-        <Hero />
-        <About />
+        <Hero content={studio} />
+        <About content={studio} />
         <Works works={works} />
         <WritingSection writings={writings} />
-        <Contact />
+        <Contact content={studio} />
       </main>
       <Footer />
     </>
