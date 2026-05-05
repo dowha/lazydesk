@@ -63,10 +63,6 @@ function Nav() {
           <a href="#about">About</a>
           <a href="#writing">Writing</a>
           <a href="#contact">Contact</a>
-          <span className="nav-cta nav-cta-stay">
-            <span className="dot" />
-            <span>Available</span>
-          </span>
         </nav>
       </div>
     </header>
