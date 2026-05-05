@@ -637,6 +637,8 @@ footer.ld-footer {
   .gallery { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
-  .nav-links a:not(.nav-cta-stay) { display: none; }
+  :root { --gutter: 24px; }
+  .nav-links a:not(.nav-primary) { display: none; }
+  .nav-cta { display: none; }
   .hero-logo--watermark { right: -50px; bottom: auto; top: 80px; width: 240px; opacity: .12; }
 }
