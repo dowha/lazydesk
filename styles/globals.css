@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,7 +22,7 @@
   --accent-deep: #B85530;
   --accent-soft: #E89A78;
 
-  --font-sans: "Inter", "Helvetica Neue", Helvetica, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+  --font-sans: "Pretendard Variable", "Pretendard", "Inter", "Helvetica Neue", Helvetica, sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
   --font-display: "Inter Tight", "Inter", sans-serif;
 
