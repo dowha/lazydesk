@@ -152,14 +152,14 @@ function Works({ works }: { works: Work[] }) {
         </div>
         <div className="works-list">
           {works.length === 0
-            ? Array.from({ length: 4 }, (_, i) => (
-                <div key={i} className="row row-empty">
+            ? (
+                <div className="row row-empty">
                   <span className="row-icon row-icon-empty" />
                   <span className="title" style={{ color: 'var(--ink-mute)' }}>—</span>
                   <span className="yr">—</span>
                   <span className="arrow" />
                 </div>
-              ))
+              )
             : works.map((w) => (
                 <a key={w.id} href={w.external_url ?? '#'} className="row" target="_blank" rel="noopener noreferrer">
                   <span className="row-icon">
@@ -190,14 +190,14 @@ function WritingSection({ writings }: { writings: Writing[] }) {
         </div>
         <div className="writing">
           {writings.length === 0
-            ? Array.from({ length: 4 }, (_, i) => (
-                <div key={i} className="write-card write-card-empty">
+            ? (
+                <div className="write-card write-card-empty">
                   <div className="write-meta"><span>—</span></div>
                   <h3 style={{ color: 'var(--ink-mute)' }}>Coming soon</h3>
                   <p style={{ color: 'var(--ink-mute)' }}>아직 쓰이지 않은 글.</p>
                   <span className="write-arrow" />
                 </div>
-              ))
+              )
             : writings.map((n) => (
                 <Link key={n.id} href={`/writing/${n.slug}`} className="write-card">
                   <div className="write-meta"><span>{formatDate(n.date)}</span></div>
