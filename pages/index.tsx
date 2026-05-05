@@ -4,28 +4,24 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
-interface Project {
+interface Work {
   id: string
   title: string
-  summary: string
-  icon_url?: string
-  screenshot_url?: string
-  external_url: string
-  created_at?: string
+  description: string | null
+  kind: string | null
+  year: string | null
+  icon_url: string | null
+  screenshot_url: string | null
+  external_url: string | null
+  order_index: number
 }
 
-interface Update {
+interface Writing {
   id: string
   title: string
-  summary: string
-  content: string
-  created_at: string
+  excerpt: string | null
   slug: string
-}
-
-function formatYear(dateStr?: string): string {
-  if (!dateStr) return '—'
-  return new Date(dateStr).getFullYear().toString()
+  date: string
 }
 
 function formatDate(dateStr: string): string {
@@ -140,7 +136,7 @@ function About() {
   )
 }
 
-function Works({ projects }: { projects: Project[] }) {
+function Works({ works }: { works: Work[] }) {
   return (
     <section className="section" id="works">
       <div className="shell">
@@ -148,7 +144,7 @@ function Works({ projects }: { projects: Project[] }) {
           <h2 className="h-section">Works</h2>
         </div>
         <div className="works-list">
-          {projects.length === 0
+          {works.length === 0
             ? Array.from({ length: 4 }, (_, i) => (
                 <div key={i} className="row row-empty">
                   <span className="row-icon row-icon-empty" />
@@ -157,22 +153,22 @@ function Works({ projects }: { projects: Project[] }) {
                   <span className="arrow" />
                 </div>
               ))
-            : projects.map((p) => (
+            : works.map((w) => (
                 <a
-                  key={p.id}
-                  href={p.external_url}
+                  key={w.id}
+                  href={w.external_url ?? '#'}
                   className="row"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span className="row-icon">
-                    {p.icon_url && (
+                    {w.icon_url && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.icon_url} alt={p.title} />
+                      <img src={w.icon_url} alt={w.title} />
                     )}
                   </span>
-                  <span className="title">{p.title}</span>
-                  <span className="yr">{formatYear(p.created_at)}</span>
+                  <span className="title">{w.title}</span>
+                  <span className="yr">{w.year ?? '—'}</span>
                   <span className="arrow">Visit →</span>
                 </a>
               ))}
@@ -182,7 +178,7 @@ function Works({ projects }: { projects: Project[] }) {
   )
 }
 
-function Writing({ updates }: { updates: Update[] }) {
+function WritingSection({ writings }: { writings: Writing[] }) {
   return (
     <section className="section" id="writing">
       <div className="shell">
@@ -190,7 +186,7 @@ function Writing({ updates }: { updates: Update[] }) {
           <h2 className="h-section">Writing</h2>
         </div>
         <div className="writing">
-          {updates.length === 0
+          {writings.length === 0
             ? Array.from({ length: 4 }, (_, i) => (
                 <div key={i} className="write-card write-card-empty">
                   <div className="write-meta"><span>—</span></div>
@@ -199,13 +195,13 @@ function Writing({ updates }: { updates: Update[] }) {
                   <span className="write-arrow" />
                 </div>
               ))
-            : updates.map((n) => (
-                <Link key={n.id} href={`/updates/${n.slug}`} className="write-card">
+            : writings.map((n) => (
+                <Link key={n.id} href={`/writing/${n.slug}`} className="write-card">
                   <div className="write-meta">
-                    <span>{formatDate(n.created_at)}</span>
+                    <span>{formatDate(n.date)}</span>
                   </div>
                   <h3>{n.title}</h3>
-                  <p>{n.summary}</p>
+                  <p>{n.excerpt}</p>
                   <span className="write-arrow">Read →</span>
                 </Link>
               ))}
@@ -245,23 +241,25 @@ function Footer() {
 }
 
 export default function Home() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [updates, setUpdates] = useState<Update[]>([])
+  const [works, setWorks] = useState<Work[]>([])
+  const [writings, setWritings] = useState<Writing[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const [{ data: projectsData }, { data: updatesData }] = await Promise.all([
+      const [{ data: worksData }, { data: writingsData }] = await Promise.all([
         supabase
-          .from('projects')
-          .select('id, title, summary, icon_url, screenshot_url, external_url, created_at')
-          .order('created_at', { ascending: false }),
+          .from('works')
+          .select('id, title, description, kind, year, icon_url, screenshot_url, external_url, order_index')
+          .eq('is_published', true)
+          .order('order_index', { ascending: true }),
         supabase
-          .from('updates')
-          .select('id, title, summary, content, created_at, slug')
-          .order('created_at', { ascending: false }),
+          .from('writing')
+          .select('id, title, excerpt, slug, date')
+          .eq('is_published', true)
+          .order('date', { ascending: false }),
       ])
-      setProjects(projectsData ?? [])
-      setUpdates(updatesData ?? [])
+      setWorks(worksData ?? [])
+      setWritings(writingsData ?? [])
     }
     fetchData()
   }, [])
@@ -281,8 +279,8 @@ export default function Home() {
       <main>
         <Hero />
         <About />
-        <Works projects={projects} />
-        <Writing updates={updates} />
+        <Works works={works} />
+        <WritingSection writings={writings} />
         <Contact />
       </main>
       <Footer />
