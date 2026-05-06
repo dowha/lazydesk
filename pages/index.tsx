@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { GetStaticProps } from 'next'
 import { supabase } from '@/lib/supabase'
 
 /* ── 타입 ──────────────────────────────────── */
@@ -249,42 +249,46 @@ function Footer() {
 
 /* ── Page ──────────────────────────────────── */
 
-export default function Home() {
-  const [studio, setStudio] = useState<StudioContent | null>(null)
-  const [works, setWorks] = useState<Work[]>([])
-  const [writings, setWritings] = useState<Writing[]>([])
+interface HomeProps {
+  studio: StudioContent | null
+  works: Work[]
+  writings: Writing[]
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const [
-        { data: studioData },
-        { data: worksData },
-        { data: writingsData },
-      ] = await Promise.all([
-        supabase
-          .from('studio')
-          .select('hero_lines, hero_accent, hero_subtitle, about_body, about_table, contact_message, contact_email')
-          .limit(1)
-          .single(),
-        supabase
-          .from('works')
-          .select('id, title, kind, year, icon_url, external_url, order_index')
-          .eq('is_published', true)
-          .order('order_index', { ascending: true }),
-        supabase
-          .from('writing')
-          .select('id, title, excerpt, slug, date')
-          .eq('is_published', true)
-          .order('date', { ascending: false }),
-      ])
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  const [
+    { data: studioData },
+    { data: worksData },
+    { data: writingsData },
+  ] = await Promise.all([
+    supabase
+      .from('studio')
+      .select('hero_lines, hero_accent, hero_subtitle, about_body, about_table, contact_message, contact_email')
+      .limit(1)
+      .single(),
+    supabase
+      .from('works')
+      .select('id, title, kind, year, icon_url, external_url, order_index')
+      .eq('is_published', true)
+      .order('order_index', { ascending: true }),
+    supabase
+      .from('writing')
+      .select('id, title, excerpt, slug, date')
+      .eq('is_published', true)
+      .order('date', { ascending: false }),
+  ])
 
-      if (studioData) setStudio(studioData as StudioContent)
-      setWorks(worksData ?? [])
-      setWritings(writingsData ?? [])
-    }
-    fetchData()
-  }, [])
+  return {
+    props: {
+      studio: (studioData as StudioContent) ?? null,
+      works: worksData ?? [],
+      writings: writingsData ?? [],
+    },
+    revalidate: 60,
+  }
+}
 
+export default function Home({ studio, works, writings }: HomeProps) {
   return (
     <>
       <Head>
