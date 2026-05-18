@@ -234,8 +234,8 @@ function WritingSection({ writings }: { writings: Writing[] }) {
         <div className="empty">
           <h3 className="coming"><span className="rule"></span>Coming soon</h3>
           <p>
-            <span className="ko">아직 쓰이지 않은 글. <Link className="lk" href="/writing">목록 보기 →</Link></span>
-            <span className="en">Not written yet. <Link className="lk" href="/writing">See all →</Link></span>
+            <span className="ko">아직 쓰이지 않은 글.</span>
+            <span className="en">Not written yet.</span>
           </p>
         </div>
       </FadeIn>
