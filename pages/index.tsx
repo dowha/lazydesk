@@ -55,6 +55,10 @@ function Nav() {
   const { setLang } = useLang()
   return (
     <FadeIn as="header" className="top">
+      <a className="brand" href="#top">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/lazydesk-logo.png" alt="Lazydesk Studio" />
+      </a>
       <span className="lang" role="group" aria-label="language">
         <span data-l="ko" tabIndex={0} onClick={() => setLang('ko')} onKeyDown={(e) => e.key === 'Enter' && setLang('ko')}>KO</span>
         <span className="sep">/</span>
