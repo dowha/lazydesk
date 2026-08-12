@@ -6,7 +6,7 @@ import { useEffect, useRef, useCallback, ElementType, ComponentPropsWithoutRef }
 function useLang() {
   const setLang = useCallback((l: 'ko' | 'en') => {
     document.documentElement.lang = l
-    try { localStorage.setItem('ldk-lang', l) } catch (_) {}
+    try { localStorage.setItem('ldk-lang', l) } catch {}
   }, [])
 
   return { setLang }
