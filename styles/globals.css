@@ -122,15 +122,6 @@ html[lang="en"] .lang [data-l="en"] { color: var(--fg); font-weight: 600; }
 /* ── section ───────────────────────────────────────────── */
 section { padding: 56px 0; border-top: 1px solid var(--rule-soft); }
 section:first-of-type { border-top: 0; }
-.sec-label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 28px;
-  font-weight: 500;
-}
 
 /* ── about ─────────────────────────────────────────────── */
 .about p { margin: 0 0 18px; color: var(--fg); }

@@ -90,8 +90,6 @@ function Hero() {
 function About() {
   return (
     <FadeIn as="section" id="about" className="about">
-      <span className="sec-label">About</span>
-
       <p className="ko">
         현대 사회에서 책상은 대체로 생산성의 상징처럼 여겨졌습니다. 그래선지 앉는 순간 무언가 해야 할 것 같고,
         아무것도 하지 않으면 왠지 뒤처지는 느낌이 들어요. 하지만 우리는 그 책상 위에서 자주 할 일을 미루고,
@@ -131,7 +129,6 @@ function About() {
 function Contact() {
   return (
     <FadeIn as="section" id="contact" className="contact">
-      <span className="sec-label">Contact</span>
       <p className="invite">
         <span className="ko">무언가를 요청하고 싶다면<br /></span>
         <span className="en">If you&apos;d like to ask for something<br /></span>
