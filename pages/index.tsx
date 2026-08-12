@@ -165,7 +165,7 @@ export default function Home() {
         <meta name="description" content="게으름이 허락된 책상에서 시작된 1인 창작 스튜디오. 기획·디자인·개발." />
         <meta property="og:title" content="Lazydesk Studio" />
         <meta property="og:description" content="게으름이 허락된 책상에서 시작된 웹/앱 서비스 제작 스튜디오" />
-        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:image" content="https://lazydesk.studio/og-image.png" />
         <meta property="og:url" content="https://lazydesk.studio" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
