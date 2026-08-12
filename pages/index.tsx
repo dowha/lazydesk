@@ -1,30 +1,5 @@
 import Head from 'next/head'
-import Link from 'next/link'
-import { GetStaticProps } from 'next'
 import { useEffect, useRef, useCallback, ElementType, ComponentPropsWithoutRef } from 'react'
-import { supabase } from '@/lib/supabase'
-
-/* ── 타입 ──────────────────────────────────── */
-
-interface Work {
-  id: string
-  title: string
-  title_en: string | null
-  kind: string | null
-  year: string | null
-  icon_url: string | null
-  external_url: string | null
-  slug: string | null
-  order_index: number
-}
-
-interface Writing {
-  id: string
-  title: string
-  excerpt: string | null
-  slug: string
-  date: string
-}
 
 /* ── Lang toggle hook ──────────────────────── */
 
@@ -86,8 +61,6 @@ function Nav() {
       </a>
       <nav className="top-nav" aria-label="primary">
         <a href="#about">About</a>
-        <a href="#works">Works</a>
-        <a href="#writing">Writing</a>
         <a href="#contact">Contact</a>
         <span className="lang" role="group" aria-label="language">
           <span data-l="ko" tabIndex={0} onClick={() => setLang('ko')} onKeyDown={(e) => e.key === 'Enter' && setLang('ko')}>KO</span>
@@ -184,78 +157,6 @@ function About() {
   )
 }
 
-/* ── Works ─────────────────────────────────── */
-
-function Works({ works }: { works: Work[] }) {
-  const fallbackWorks = [
-    { id: 'k1', title: '코스피 150 퀀트 대시보드', title_en: 'KOSPI 150 Quant Dashboard', year: '2026', icon_url: null, external_url: null, slug: null },
-    { id: 'k2', title: 'K리그 일정 캘린더', title_en: 'K League Schedule Calendar', year: '2026', icon_url: null, external_url: 'https://kleague.lazydesk.studio', slug: null },
-  ]
-  const list = works.length > 0 ? works : fallbackWorks
-
-  return (
-    <FadeIn as="section" id="works">
-      <span className="sec-label">Works</span>
-      <div className="works">
-        {list.map((w) => {
-          const href = w.slug ? `/works/${w.slug}` : (w.external_url ?? '#')
-          const isExternal = !w.slug && !!w.external_url
-          return (
-            <a
-              key={w.id}
-              className="work"
-              href={href}
-              {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >
-              <span className="ico" aria-hidden="true">
-                {w.icon_url && <img src={w.icon_url} alt="" />}
-              </span>
-              <span className="ttl">
-                <span className="ko">{w.title}</span>
-                <span className="en">{w.title_en ?? w.title}</span>
-              </span>
-              <span className="yr">{w.year ?? '—'}</span>
-              <span className="go">Visit →</span>
-            </a>
-          )
-        })}
-      </div>
-    </FadeIn>
-  )
-}
-
-/* ── Writing ───────────────────────────────── */
-
-function WritingSection({ writings }: { writings: Writing[] }) {
-  if (writings.length === 0) {
-    return (
-      <FadeIn as="section" id="writing" className="writing">
-        <span className="sec-label">Writing</span>
-        <div className="empty">
-          <h3 className="coming"><span className="rule"></span>Coming soon</h3>
-          <p>
-            <span className="ko">아직 쓰이지 않은 글.</span>
-            <span className="en">Not written yet.</span>
-          </p>
-        </div>
-      </FadeIn>
-    )
-  }
-  return (
-    <FadeIn as="section" id="writing" className="writing">
-      <span className="sec-label">Writing</span>
-      <div className="posts">
-        {writings.map((n) => (
-          <Link key={n.id} href={`/writing/${n.slug}`} className="post">
-            <span className="ttl">{n.title}</span>
-            <span className="date">{n.date.slice(0, 7)}</span>
-          </Link>
-        ))}
-      </div>
-    </FadeIn>
-  )
-}
-
 /* ── Contact ───────────────────────────────── */
 
 function Contact() {
@@ -290,35 +191,7 @@ function Footer() {
 
 /* ── Page ──────────────────────────────────── */
 
-interface HomeProps {
-  works: Work[]
-  writings: Writing[]
-}
-
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const [{ data: worksData }, { data: writingsData }] = await Promise.all([
-    supabase
-      .from('works')
-      .select('id, title, title_en, kind, year, icon_url, external_url, slug, order_index')
-      .eq('is_published', true)
-      .order('order_index', { ascending: true }),
-    supabase
-      .from('writing')
-      .select('id, title, excerpt, slug, date')
-      .eq('is_published', true)
-      .order('date', { ascending: false }),
-  ])
-
-  return {
-    props: {
-      works: (worksData as Work[]) ?? [],
-      writings: (writingsData as Writing[]) ?? [],
-    },
-    revalidate: 60,
-  }
-}
-
-export default function Home({ works, writings }: HomeProps) {
+export default function Home() {
   return (
     <>
       <Head>
@@ -335,8 +208,6 @@ export default function Home({ works, writings }: HomeProps) {
         <main>
           <Hero />
           <About />
-          <Works works={works} />
-          <WritingSection writings={writings} />
           <Contact />
         </main>
         <Footer />
