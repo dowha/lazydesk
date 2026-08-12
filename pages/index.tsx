@@ -55,19 +55,11 @@ function Nav() {
   const { setLang } = useLang()
   return (
     <FadeIn as="header" className="top">
-      <a className="brand" href="#top">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/lazydesk-logo.png" alt="Lazydesk Studio" />
-      </a>
-      <nav className="top-nav" aria-label="primary">
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-        <span className="lang" role="group" aria-label="language">
-          <span data-l="ko" tabIndex={0} onClick={() => setLang('ko')} onKeyDown={(e) => e.key === 'Enter' && setLang('ko')}>KO</span>
-          <span className="sep">/</span>
-          <span data-l="en" tabIndex={0} onClick={() => setLang('en')} onKeyDown={(e) => e.key === 'Enter' && setLang('en')}>EN</span>
-        </span>
-      </nav>
+      <span className="lang" role="group" aria-label="language">
+        <span data-l="ko" tabIndex={0} onClick={() => setLang('ko')} onKeyDown={(e) => e.key === 'Enter' && setLang('ko')}>KO</span>
+        <span className="sep">/</span>
+        <span data-l="en" tabIndex={0} onClick={() => setLang('en')} onKeyDown={(e) => e.key === 'Enter' && setLang('en')}>EN</span>
+      </span>
     </FadeIn>
   )
 }
@@ -126,33 +118,6 @@ function About() {
         I move slowly but steadily, trusting that fast isn&apos;t the only way. Let the early birds
         catch their worms — I&apos;ll keep making things at my own pace. Right here, at the desk.
       </p>
-
-      <div className="info">
-        <dl>
-          <dt>Practice</dt>
-          <dd>Product design, frontend &amp; iOS development</dd>
-
-          <dt>Tools</dt>
-          <dd className="chips">
-            <span>Figma</span><span>React</span><span>Swift</span><span>Tailwind</span><span>Postgres</span>
-          </dd>
-
-          <dt>Languages</dt>
-          <dd>
-            <span className="ko">한국어 · English</span>
-            <span className="en">Korean · English</span>
-          </dd>
-
-          <dt>Founded</dt>
-          <dd className="tab">2025, Seoul</dd>
-
-          <dt>Lead time</dt>
-          <dd>
-            <span className="ko">대개 <span className="tab">4 — 8</span>주, 한 번에 한 프로젝트</span>
-            <span className="en">Usually <span className="tab">4 — 8</span> weeks, one project at a time</span>
-          </dd>
-        </dl>
-      </div>
     </FadeIn>
   )
 }
